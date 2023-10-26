@@ -94,6 +94,9 @@ func InsertCrawledNodes(db *sql.DB, crawledNodes []crawlerdb.CrawledNode) error 
 	})
 
 	for _, node := range crawledNodes {
+		if node.NetworkID != 1 {
+			log.Warn("Non-ethereum mainnet node added", "nodeID: ", node.ID, "networkID: ", node.NetworkID)
+		}
 		parsed := vparser.ParseVersionString(node.ClientType)
 		if parsed != nil {
 			_, err = stmt.Exec(

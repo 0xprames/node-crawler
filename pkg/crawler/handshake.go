@@ -71,7 +71,7 @@ func getClientInfo(genesis *core.Genesis, networkID uint64, nodeURL string, n *e
 
 	// Disconnect from client
 	_ = conn.Write(Disconnect{Reason: p2p.DiscQuitting})
-
+	fmt.Printf("successfully connected to client :%v\n", info)
 	return &info, nil
 }
 
@@ -133,7 +133,7 @@ func readHello(conn *Conn, info *common.ClientInfo) error {
 		info.Capabilities = msg.Caps
 		info.SoftwareVersion = msg.Version
 		info.ClientType = msg.Name
-
+		info.Port = msg.ListenPort
 		conn.negotiateEthProtocol(info.Capabilities)
 
 		return nil

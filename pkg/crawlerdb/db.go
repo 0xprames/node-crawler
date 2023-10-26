@@ -18,12 +18,29 @@ import (
 	"github.com/oschwald/geoip2-golang"
 )
 
+type PeerData struct {
+	EnodeUrl        string
+	Id              string
+	Address         string
+	Port            uint64
+	ClientVersion   string
+	Capabilities    string
+	NetworkID       uint64
+	TotalDifficulty string
+	BestBlock       string
+	LastSeen        string
+	Country         string
+	City            string
+	Score           int
+}
+
 // ETH2 is a SSZ encoded field.
 type ETH2 []byte
 
 func (v ETH2) ENRKey() string { return "eth2" }
 
 func UpdateNodes(db *sql.DB, geoipDB *geoip2.Reader, nodes []common.NodeJSON) error {
+
 	log.Info("Writing nodes to db", "nodes", len(nodes))
 
 	now := time.Now()
@@ -59,6 +76,9 @@ func UpdateNodes(db *sql.DB, geoipDB *geoip2.Reader, nodes []common.NodeJSON) er
 		return err
 	}
 	defer stmt.Close()
+
+	// insert into our ddb
+	cdb := NewDynamoPeerDataClient()
 
 	for _, n := range nodes {
 		info := &common.ClientInfo{}
@@ -135,6 +155,24 @@ func UpdateNodes(db *sql.DB, geoipDB *geoip2.Reader, nodes []common.NodeJSON) er
 		if err != nil {
 			return err
 		}
+
+		peer := PeerData{
+			EnodeUrl:        n.N.String(),
+			Id:              n.N.ID().String(),
+			ClientVersion:   info.ClientType,
+			Address:         n.N.IP().String(),
+			Port:            info.Port,
+			Capabilities:    caps,
+			NetworkID:       info.NetworkID,
+			TotalDifficulty: info.TotalDifficulty.String(),
+			BestBlock:       info.HeadHash.String(),
+			LastSeen:        n.LastResponse.String(),
+			Country:         country,
+			City:            city,
+			Score:           n.Score,
+		}
+		log.Info("Writing to ddb table")
+		cdb.insertPeer(peer)
 	}
 
 	return tx.Commit()

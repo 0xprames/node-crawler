@@ -17,4 +17,5 @@ type ClientInfo struct {
 	Blockheight     string
 	TotalDifficulty *big.Int
 	HeadHash        common.Hash
+	Port            uint64
 }

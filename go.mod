@@ -3,6 +3,7 @@ module github.com/ethereum/node-crawler
 go 1.20
 
 require (
+	github.com/aws/aws-sdk-go v1.46.2
 	github.com/ethereum/go-ethereum v1.12.2
 	github.com/fjl/memsize v0.0.1
 	github.com/gorilla/mux v1.8.0
@@ -61,6 +62,7 @@ require (
 	github.com/influxdata/influxdb1-client v0.0.0-20220302092344-a9ab5670611c // indirect
 	github.com/influxdata/line-protocol v0.0.0-20210311194329-9aa0e372d097 // indirect
 	github.com/jackpal/go-nat-pmp v1.0.2 // indirect
+	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
 	github.com/kilic/bls12-381 v0.1.0 // indirect
 	github.com/klauspost/compress v1.15.15 // indirect
